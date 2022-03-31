@@ -48,16 +48,22 @@ export default {
   methods: {
     // login through a store action
     login() {
-      this.$store.dispatch("login", {
-        username: this.username,
-        password: this.password,
-      })
-      .then(() => {
-        this.$router.push('/products');
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+      this.$store
+        .dispatch("login", {
+          username: this.username,
+          password: this.password,
+        })
+        .then(() => {
+          if (this.$store.getters.isAdmin) {
+            this.$router.push("/products");
+          } else {
+            this.$router.push("/");
+          }
+        })
+        .catch((error) => {
+          this.errorMessage = error;
+          console.log(error);
+        });
     },
   },
 };

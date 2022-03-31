@@ -30,16 +30,22 @@
 
         <div class="input-group mb-3">
           <span class="input-group-text">Category</span>
-          <select class="form-select">
-            <option value="testoptionvalue">test option       
+          <select class="form-select" v-model="product.category_id">
+            <option
+              v-for="category in categories"
+              :key="category.id"
+              :value="category.id"
+            >
+              {{ category.name }}
             </option>
           </select>
         </div>
 
         <div class="input-group mt-4">
-          <button type="button" class="btn btn-primary">
+          <button type="button" class="btn btn-primary" @click="updateProduct">
             Save changes
-          </button>
+            </button>
+
           <button
             type="button"
             class="btn btn-danger"
@@ -54,6 +60,7 @@
 </template>
 
 <script>
+import axios from "../../axios-auth";
 export default {
   name: "EditProduct",
   props: {
@@ -71,7 +78,35 @@ export default {
       },
       categories: [],
     };
-  }  
+  },
+  mounted() {
+    axios
+      .get("/categories")
+      .then((result) => {
+        console.log(result);
+        this.categories = result.data;
+        axios
+          .get("/products/" + this.id)
+          .then((result) => {
+            console.log(result);
+            this.product = result.data;
+          })
+          .catch((error) => console.log(error));
+      })
+      .catch((error) => console.log(error));
+  },
+  methods: {
+    updateProduct() {
+      axios
+        .put("/products/" + this.product.id, this.product)
+        .then((result) => {
+          console.log(result.data);
+          this.$refs.form.reset();
+          this.$router.push("/products");
+        })
+        .catch((error) => console.log(error));
+    },
+  },
 };
 </script>
 

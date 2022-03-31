@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import Store from './store/store';
+import store from './store/store';
 
 import Home from './components/Home.vue';
 import ProductList from './components/products/ProductList.vue';
@@ -13,7 +13,7 @@ const routes = [
     { path: '/', component: Home },
     { path: '/products', component: ProductList },
     { path: '/createproduct', component: CreateProduct },
-    { path: '/login.vue', component: Login },
+    { path: '/login', component: Login },
     { path: '/editproduct/:id', component: EditProduct, props: true  }
 ];
 
@@ -24,5 +24,5 @@ const router = createRouter({
 
 const app = createApp(App);
 app.use(router);
-app.use(Store);
+app.use(store);
 app.mount('#app');

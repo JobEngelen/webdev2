@@ -1,4 +1,21 @@
-# routing-intro
+# Webdevelopment 2 eindopdracht
+Job Engelen
+669915
+INF2B
+
+# Login:
+user:
+username= username
+password= password
+
+admin:
+username= admin
+password= admin
+
+# Github:
+
+https://github.com/JobEngelen/webdev2
+https://github.com/JobEngelen/webdev2api (Miss db opnieuw importen als er geen wasdrogers zijn)
 
 ## Project setup
 ```

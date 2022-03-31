@@ -1,7 +1,7 @@
 <template>
   <section>
     <div class="container">
-      <h2 class="mt-3 mt-lg-5">Products</h2>
+      <h2 class="mt-3 mt-lg-5">Manage products</h2>
       <button
         type="button"
         class="btn btn-primary mt-3"
@@ -42,7 +42,8 @@ export default {
     loadProducts() {
       axios.get("/products").then((result) => {
         this.products = result.data;
-      });
+      })
+      .catch((error) => console.log(error));
     },
   },
 };
