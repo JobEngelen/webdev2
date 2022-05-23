@@ -18,6 +18,11 @@
     </div>
   </section>
   <section>
+    <shopping-cart>
+
+    </shopping-cart>
+  </section>
+  <section>
     <div class="container">
       <div class="row mt-3">
         <home-product-list-item
@@ -34,12 +39,14 @@
 <script>
 import axios from "../axios-auth";
 import HomeProductListItem from "./products/HomeProductListItem.vue";
+import ShoppingCart from "./shoppingcart/ShoppingCart.vue";
 
 export default {
   name: "Home",
   components: {
     HomeProductListItem,
-  },
+    ShoppingCart
+},
   data() {
     return {
       products: [],
@@ -56,6 +63,9 @@ export default {
           this.products = result.data;
         })
         .catch((error) => console.log(error));
+    },
+    addToCart(product) {
+      this.$store.dispatch("addToCart", product);
     },
   },
 };

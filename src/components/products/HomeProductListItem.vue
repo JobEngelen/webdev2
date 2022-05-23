@@ -13,21 +13,29 @@
         <span class="price float-end">{{ product.price }}</span>
       </div>
       <div class="card-footer">
-        <button class="btn btn-primary" disabled>
-          Out of stock <!-- There is no shoppingcart -->
-        </button>
+        <button class="btn btn-primary w-100" @click="addToCart()">Voeg toe aan winkelwagen</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 
 export default {
   name: "HomeProductListItem",
   props: {
     product: Object,
   },
+  methods: {
+    ...mapActions("cart", ["addProductToCart"]),
+    addToCart() {
+      this.addProductToCart({
+        product: this.product,
+        quantity: 1
+      });
+    }
+  }
 };
 </script>
 
