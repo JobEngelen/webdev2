@@ -64,9 +64,6 @@ export default {
         })
         .catch((error) => console.log(error));
     },
-    addToCart(product) {
-      this.$store.dispatch("addToCart", product);
-    },
   },
 };
 </script>
