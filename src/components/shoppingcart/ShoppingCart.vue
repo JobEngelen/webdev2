@@ -40,6 +40,16 @@ export default {
       })
         .catch((error) => console.log(error));
     },
+    order() {
+      axios
+        .post("/order", this.userId)
+        .then((result) => {
+          console.log(result);
+          this.$router.push("/");
+        })
+        .catch((error) => console.log(error));
+    },
+    }
   },
   computed: {
     /*cartItems() {
