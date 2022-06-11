@@ -9,12 +9,6 @@
               >Home</router-link
             >
           </li>
-          <li class="nav-item">
-            <!-- Add a router link to the homepage (don't use the a tag!) -->
-            <router-link to="/cart-test" class="nav-link" active-class="active"
-              >Cart test</router-link
-            >
-          </li>
           <li class="nav-item" v-if="this.$store.getters.isAuthenticated && this.$store.getters.isAdmin">
             <!-- add a router link to the products page (don't use the a tag!) -->
             <router-link to="/products" class="nav-link" active-class="active"

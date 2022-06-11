@@ -7,7 +7,7 @@ INF2B
 
 # Login:
 user:
-username= username
+username= user
 password= password
 
 admin:

@@ -1,17 +1,39 @@
 <template>
   <section>
-    <div class="container position-absolute w-25">
+    <div class="container position-absolute w-25 px-2">
       <form ref="form">
         <h2>WINKELWAGEN</h2>
-        <table class="table m-0">
+        <h5 v-if="this.$store.getters.cartNotEmpty">
+          Product: {{ this.$store.state.cart }}
+        </h5>
+        <table class="table">
+          <tr>
+            <th class="col-md-4">
+              <h5>Naam</h5>
+            </th>
+            <th class="col-md-3">
+              <h5>Aantal</h5>
+            </th>
+            <th class="col-md-2">
+              <h5>Prijs</h5>
+            </th>
+            <th class="col-md-1">
+              <h5>Actie</h5>
+            </th>
+          </tr>
           <shopping-cart-item v-for="product in products" :key="product.id" :product="product" @update="loadProducts" />
           <tr>
-            <div class="w-25 pt-5"></div>
+            <th></th>
             <th class="px-2 w-25">Totaal:</th>
-            <th class="px-2">€ <i class="amount py-0">900,00</i></th>
+            <th class="px-2">
+              <div class="total-price p-0 pt-2">
+                <h6 class="px-0">€ <i class="amount py-0">{{ getTotal() }}</i></h6>
+              </div>
+            </th>
           </tr>
         </table>
-        <a class="btn btn-success">Bestellen</a>
+        <a class="btn btn-secondary me-5" @click="this.$store.dispatch('clearShoppingCart')">Leeg winkelwagen</a>
+        <a class="btn btn-success mx-5" @click="order()">Bestellen</a>
       </form>
     </div>
   </section>
@@ -30,44 +52,53 @@ export default {
     };
   },
   mounted() {
-    this.loadProducts();
-    //this.getCartItems();
+    if (this.$store.state.cart != null) this.loadProducts();
   },
   methods: {
     loadProducts() {
-      axios.get("/homeproducts").then((result) => {
-        this.products = result.data;
-      })
-        .catch((error) => console.log(error));
-    },
-    order() {
+      console.log(this.$store.state.username);
+      console.log(this.$store.state.cart);
       axios
-        .post("/order", this.userId)
+        .get("/products/cart/" + this.$store.state.cart)
         .then((result) => {
-          console.log(result);
-          this.$router.push("/");
+          this.products = result.data;
         })
         .catch((error) => console.log(error));
     },
+    order() {
+      this.$store
+        .dispatch("order")
+        .then(() => {
+          this.$store.dispatch('clearShoppingCart');
+        })
+        .catch((error) => {
+          this.errorMessage = error;
+          console.log(error);
+        });
+    },
+    getTotal() {
+      var total = 0;
+
+      this.products.forEach((product) => {
+        let quantity = 0;
+        var cartArray = this.$store.state.cart.split(',,');
+        cartArray.forEach((value) => {
+          if (value == product.id) quantity++;
+        })
+        total += parseFloat(product.price * quantity);
+      })
+      return total.toFixed(2);
     }
   },
-  computed: {
-    /*cartItems() {
-      return this.$store.state.cartItems;
-    },
-    totalPrice() {
-      let price = 0;
-      this.$store.state.cartItems.map(el => {
-        price += el["quantity"] * el["price"];
-      });
-      return price;
-    }*/
-  }
-};
+}
 </script>
 
 <style>
 .table {
   max-width: 270px;
+}
+
+.total-price {
+  width: 80px;
 }
 </style>
