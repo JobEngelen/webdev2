@@ -8,10 +8,10 @@
     <td class="container p-0">
       <div class="row w-100 m-0 p-0">
         <div class="col-3 p-0">
-          <a class="btn btn-secondary p-1 py-0 cart-btn" @click="this.$store.dispatch('removeItemFromCart', product)"><i class="fas fa-minus"></i></a>
+          <a class="btn btn-secondary p-1 py-0 cart-btn" @click="this.$store.dispatch('retractItemFromCart', product)"><i class="fas fa-minus"></i></a>
         </div>
         <div class="col-3 pl-2 pe-3">
-          <h6>{{ getQuantity(product) }}</h6>
+          <h6>{{ product.quantity }}</h6>
         </div>
         <div class="col-3 p-0">
           <a class="btn btn-secondary p-1 py-0 cart-btn" @click="this.$store.dispatch('addItemToCart', product)"><i class="fas fa-plus"></i></a>
@@ -19,7 +19,7 @@
       </div>
     </td>
     <td>
-      <h6>€ <i class="amount py-0">{{ (product.price * getQuantity(product)).toFixed(2) }}</i></h6>
+      <h6>€ <i class="amount py-0">{{ (product.price * product.quantity).toFixed(2) }}</i></h6>
     </td>
     <td>
       <div>
@@ -37,14 +37,6 @@ export default {
     product: Object,
   },
   methods: {
-    getQuantity(product) {
-      let quantity = 0;
-      var cartArray = this.$store.state.cart.split(',,');
-      cartArray.forEach((value) => {
-        if (value == product.id) quantity++;
-      })
-      return quantity;
-    },
   },
 };
 </script>

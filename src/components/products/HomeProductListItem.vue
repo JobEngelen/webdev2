@@ -10,10 +10,10 @@
             <small>{{ product.category.name }}</small>
           </p>
         </div>
-        <span class="price float-end">{{ product.price }}</span>
+        <span class="price float-end">€ {{ product.price }}</span>
       </div>
       <div class="card-footer">
-        <button @click="this.$store.dispatch('addItemToCart', product)" class="btn btn-primary form-control">
+        <button @click="addToCart(product)" class="btn btn-primary form-control">
         Voeg toe aan winkelwagen
         </button>
       </div>
@@ -27,6 +27,12 @@ export default {
   name: "HomeProductListItem",
   props: {
     product: Object,
+  },
+  methods: {
+    addToCart(product) {
+      if (product.quantity == 0) product.quantity = 1;
+      this.$store.dispatch('addItemToCart', product);
+    }
   },
 };
 </script>

@@ -7,7 +7,7 @@ const store = createStore({
             uid: null,
             username: 1,
             userType: null,
-            cart: null
+            cart: []
         }
     },
     getters: {
@@ -19,7 +19,17 @@ const store = createStore({
         },
         cartNotEmpty(state) {
             return state.cart != null;
-        }
+        },
+        getCartItems() {
+            var cart = localStorage.getItem('cart');
+            if (typeof cart !== "undefined" && cart !== null && cart != "") {
+                var products = [];
+                JSON.parse(cart).forEach(product => {
+                    products.push(product);
+                })
+                return products;
+            }
+        },
     },
     mutations: {
         loginSuccesful(state, parameters) {
@@ -34,10 +44,28 @@ const store = createStore({
             state.username = null;
         },
         shoppingCart(state, parameter) {
-            state.cart = parameter.cart;
+            var inArray = false;
+            if (typeof state.cart !== "undefined" && state.cart !== null && state.cart != "") {
+                state.cart.forEach(product => {
+                    if (parameter.cart.id == product.id) {
+                        state.cart[state.cart.indexOf(product)].quantity++;
+                        inArray = true;
+                    }
+                })
+            }
+            if (!inArray) state.cart.push(parameter.cart);
+            localStorage.setItem('cart', JSON.stringify(this.state.cart));
+        },
+        retractFromCart(state, parameter) {
+            state.cart[state.cart.indexOf(parameter.cart)].quantity--;
+        },
+        clearItemFromCart(state, parameter) {
+            state.cart.splice(state.cart.indexOf(parameter.cart), 1);
+            console.log(state.cart);
+            localStorage.setItem('cart', JSON.stringify(state.cart));
         },
         clearShoppingCart(state) {
-            state.cart = null;
+            state.cart = [];
         }
     },
     actions: {
@@ -48,6 +76,7 @@ const store = createStore({
             let userType = localStorage.getItem('userType');
             let cart = localStorage.getItem('cart');
 
+
             if (jwt) {
                 axios.defaults.headers.common["Authorization"] = "Bearer " + jwt;
                 commit('loginSuccesful', {
@@ -57,9 +86,13 @@ const store = createStore({
                     userType: userType
                 });
             }
-            commit('shoppingCart', {
-                cart: cart
-            })
+            if (typeof cart !== "undefined" && cart !== null && cart != "") {
+                JSON.parse(cart).forEach(product => {
+                    commit('shoppingCart', {
+                        cart: product
+                    })
+                });
+            }
         },
         logout({ commit }) {
             localStorage.clear();
@@ -93,95 +126,53 @@ const store = createStore({
             })
         },
         addItemToCart({ commit }, parameter) {
-            return new Promise((resolve, reject) => {
-                axios
-                    .get("/products/" + parameter.id)
-                    .then((res) => {
-                        let cart = localStorage.getItem('cart');
-
-                        var cartString = "";
-
-                        if (cart != null) {
-                            var cartArray = cart.split(',,');
-                            cartArray.push(res.data.id);
-                            cartArray.forEach((value, index) => {
-                                if (index == 0) cartString = value;
-                                else cartString += ",," + value;
-                            })
-                        } else {
-                            cartString = res.data.id;
-                        }
-                        localStorage.setItem('cart', cartString);
-
-                        commit('shoppingCart', {
-                            cart: cartString,
-                        });
-                        resolve();
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        reject(error);
-                    });
-            })
-        },
-        removeItemFromCart({ commit }, parameter) {
-            let cart = localStorage.getItem('cart');
-
-            var cartString = "";
-            var removed = false;
-
-            var cartArray = cart.split(',,');
-            cartArray.forEach((value, index) => {
-                console.log(value + " en " + parameter.id);
-                if (!removed && value == parameter.id) removed = true;
-                else {
-                    if (index == 0) cartString = value;
-                    else cartString += ",," + value;
-                }
-            })
-
-            localStorage.setItem('cart', cartString);
-
             commit('shoppingCart', {
-                cart: cartString,
+                cart: parameter,
             });
+        },
+        retractItemFromCart({ commit }, product) {
+            commit('retractFromCart', {
+                cart: product,
+            });
+            if (product.quantity == 0) {
+                commit('clearItemFromCart', {
+                    cart: product
+                })
+            }
         },
         clearItemFromCart({ commit }, parameter) {
-            let cart = localStorage.getItem('cart');
-
-            var cartString = "";
-
-            var cartArray = cart.split(',,');
-            cartArray.forEach((value, index) => {
-                console.log(value + " en " + parameter.id);
-                if (value != parameter.id)
-                {
-                    if (index == 0) cartString = value;
-                    else cartString += ",," + value;
-                }
+            commit('clearItemFromCart', {
+                cart: parameter
             })
-
-            localStorage.setItem('cart', cartString);
-
-            commit('shoppingCart', {
-                cart: cartString,
-            });
         },
         clearShoppingCart({ commit }) {
             localStorage.removeItem('cart');
             commit('clearShoppingCart');
         },
-        order() {
-            console.log("cart= " + localStorage.getItem('cart'));
-            console.log("uid= " + localStorage.getItem('uid'));
+        order({ commit }) {
+
+            var cart = localStorage.getItem('cart');/*
+            var orderString = "";
+            if (typeof cart !== "undefined" && cart !== null && cart != "") {
+                JSON.parse(cart).forEach(product => {
+                    orderString += ",," + product.id + "q" + product.quantity;
+                })
+            }
+
+            console.log("os= " + orderString);
+            console.log("uid= " + localStorage.getItem('uid'));*/
             return new Promise((resolve, reject) => {
                 axios
                     .post("/order", {
-                        orderstring: localStorage.getItem('cart'),
+                        orderstring: JSON.parse(cart),
                         userid: localStorage.getItem('uid'),
                     })
                     .then(res => {
+                        console.log(res);
                         alert(res.data);
+
+                        localStorage.removeItem('cart');
+                        commit('clearShoppingCart');
                         resolve();
                     })
                     .catch((error) => reject(error));

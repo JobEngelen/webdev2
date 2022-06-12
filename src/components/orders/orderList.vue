@@ -1,16 +1,9 @@
 <template>
   <section>
-    <div class="container">
-      <h2 class="mt-3 mt-lg-5">Manage products</h2>
-      <button
-        type="button"
-        class="btn btn-primary mt-3"
-        @click="this.$router.push('/createproduct')"
-      >
-        Add product
-      </button>
-      <div class="row mt-3">
-        <product-list-item
+    <div class="container px-5">
+      <h2 class="mt-3 mt-lg-5 px-5">Manage orders</h2>
+      <div class="row mt-4 w-100 px-5">
+        <order-list-item
           v-for="product in products"
           :key="product.id"
           :product="product"
@@ -23,12 +16,12 @@
 
 <script>
 import axios from "../../axios-auth";
-import ProductListItem from "./ProductListItem.vue";
+import OrderListItem from "./orderListItem.vue";
 
 export default {
-  name: "ProductList",
+  name: "OrderList",
   components: {
-    ProductListItem,
+    OrderListItem,
   },
   data() {
     return {

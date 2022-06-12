@@ -3,9 +3,6 @@
     <div class="container position-absolute w-25 px-2">
       <form ref="form">
         <h2>WINKELWAGEN</h2>
-        <h5 v-if="this.$store.getters.cartNotEmpty">
-          Product: {{ this.$store.state.cart }}
-        </h5>
         <table class="table">
           <tr>
             <th class="col-md-4">
@@ -21,7 +18,7 @@
               <h5>Actie</h5>
             </th>
           </tr>
-          <shopping-cart-item v-for="product in products" :key="product.id" :product="product" @update="loadProducts" />
+          <shopping-cart-item v-for="product in this.$store.state.cart" :key="product.id" :product="product" />
           <tr>
             <th></th>
             <th class="px-2 w-25">Totaal:</th>
@@ -41,7 +38,6 @@
 
 <script>
 import ShoppingCartItem from './ShoppingCartItem.vue';
-import axios from "../../axios-auth";
 
 export default {
   components: { ShoppingCartItem },
@@ -52,24 +48,12 @@ export default {
     };
   },
   mounted() {
-    if (this.$store.state.cart != null) this.loadProducts();
   },
   methods: {
-    loadProducts() {
-      console.log(this.$store.state.username);
-      console.log(this.$store.state.cart);
-      axios
-        .get("/products/cart/" + this.$store.state.cart)
-        .then((result) => {
-          this.products = result.data;
-        })
-        .catch((error) => console.log(error));
-    },
     order() {
       this.$store
         .dispatch("order")
         .then(() => {
-          this.$store.dispatch('clearShoppingCart');
         })
         .catch((error) => {
           this.errorMessage = error;
@@ -78,16 +62,14 @@ export default {
     },
     getTotal() {
       var total = 0;
-
-      this.products.forEach((product) => {
-        let quantity = 0;
-        var cartArray = this.$store.state.cart.split(',,');
-        cartArray.forEach((value) => {
-          if (value == product.id) quantity++;
+      try {
+        this.$store.state.cart.forEach(product => {
+          total += parseFloat(product.price) * product.quantity;
         })
-        total += parseFloat(product.price * quantity);
-      })
-      return total.toFixed(2);
+        return total.toFixed(2);
+      } catch (err) {
+        console.log(err);
+      }
     }
   },
 }

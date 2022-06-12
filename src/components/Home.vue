@@ -25,12 +25,8 @@
   <section>
     <div class="container px-5">
       <div class="row mt-3 px-5">
-        <home-product-list-item
-          v-for="product in products"
-          :key="product.id"
-          :product="product"
-          @update="loadProducts"
-        />
+        <home-product-list-item v-for="product in products" :key="product.id" :product="product"
+          @update="loadProducts" />
       </div>
     </div>
   </section>
@@ -46,7 +42,7 @@ export default {
   components: {
     HomeProductListItem,
     ShoppingCart
-},
+  },
   data() {
     return {
       products: [],
@@ -60,7 +56,10 @@ export default {
       axios
         .get("/homeproducts")
         .then((result) => {
-          this.products = result.data;
+          result.data.forEach(res => {
+            res.quantity = 1;
+            this.products.push(res);
+          })
         })
         .catch((error) => console.log(error));
     },

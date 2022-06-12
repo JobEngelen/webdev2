@@ -7,12 +7,14 @@ import Home from './components/Home.vue';
 import ProductList from './components/products/ProductList.vue';
 import CreateProduct from './components/products/CreateProduct.vue';
 import EditProduct from './components/products/EditProduct.vue';
+import OrderList from './components/orders/orderList.vue';
 import Login from './components/Login.vue';
 
 const routes = [
     { path: '/', component: Home },
     { path: '/products', component: ProductList },
     { path: '/createproduct', component: CreateProduct },
+    { path: '/orders', component: OrderList },
     { path: '/login', component: Login },
     { path: '/editproduct/:id', component: EditProduct, props: true  }
 ];
