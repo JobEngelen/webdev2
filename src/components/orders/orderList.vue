@@ -4,10 +4,10 @@
       <h2 class="mt-3 mt-lg-5 px-5">Manage orders</h2>
       <div class="row mt-4 w-100 px-5">
         <order-list-item
-          v-for="product in products"
-          :key="product.id"
-          :product="product"
-          @update="loadProducts"
+          v-for="order in orders"
+          :key="order.id"
+          :order="order"
+          @update="loadOrders"
         />
       </div>
     </div>
@@ -25,16 +25,18 @@ export default {
   },
   data() {
     return {
-      products: [],
+      orders: [],
     };
   },
   mounted() {
-    this.loadProducts();
+    this.loadOrders();
   },
   methods: {
-    loadProducts() {
-      axios.get("/products").then((result) => {
-        this.products = result.data;
+    loadOrders() {
+      axios.get("/order").then((result) => {
+        this.orders = result.data;
+        console.log(this.orders);
+        console.log("/////////////////////////");
       })
       .catch((error) => console.log(error));
     },
