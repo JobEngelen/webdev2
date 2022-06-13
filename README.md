@@ -1,4 +1,4 @@
-# Webdevelopment 2 eindopdracht
+# Webdevelopment 2 eindopdracht herkansing
 Job Engelen
 669915
 INF2B
@@ -17,7 +17,12 @@ password= admin
 # Github:
 
 https://github.com/JobEngelen/webdev2
-https://github.com/JobEngelen/webdev2api (Miss db opnieuw importen als er geen wasdrogers zijn)
+https://github.com/JobEngelen/webdev2api 
+
+
+# Wat is er nieuw:
+- Shoppingcart (blijft na refreshen van pagina)
+- Orderpagina waar admin orders kan verwijderen/status kan wijzigen
 
 ## Project setup
 ```
