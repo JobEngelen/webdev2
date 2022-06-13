@@ -35,8 +35,6 @@ export default {
     loadOrders() {
       axios.get("/order").then((result) => {
         this.orders = result.data;
-        console.log(this.orders);
-        console.log("/////////////////////////");
       })
       .catch((error) => console.log(error));
     },

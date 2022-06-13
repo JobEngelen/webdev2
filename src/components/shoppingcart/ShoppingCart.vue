@@ -29,8 +29,10 @@
             </th>
           </tr>
         </table>
-        <a class="btn btn-secondary me-5" @click="this.$store.dispatch('clearShoppingCart')">Leeg winkelwagen</a>
-        <a class="btn btn-success mx-5" @click="order()">Bestellen</a>
+        <a v-if='cartEmpty()' class="btn btn-secondary me-5" disabled>Leeg winkelwagen</a>
+        <a v-else class="btn btn-secondary me-5" @click="this.$store.dispatch('clearShoppingCart')">Leeg winkelwagen</a>
+        <a v-if='cartEmpty()' class="btn btn-success mx-5" disabled>Bestellen</a>
+        <a v-else class="btn btn-success mx-5" @click="order()">Bestellen</a>
       </form>
     </div>
   </section>
@@ -70,6 +72,9 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    },
+    cartEmpty() {
+      return this.$store.state.cart.length == 0;
     }
   },
 }

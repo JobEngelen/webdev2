@@ -15,7 +15,7 @@
             <th class="pe-3">Aantal</th>
             <th>Prijs</th>
           </tr>
-          <order-list-item-product-item v-for="product in products" :key="product.id" :product="product"/>
+          <order-list-item-product-item v-for="product in products" :key="product.id" :product="product" />
         </table>
       </div>
       <div class="col">
@@ -29,9 +29,9 @@
       </button>
       <div class="float-end">
         <strong class="p-2">Status:</strong>
-        <button v-if="order.delivered" class="btn btn-success" @click="editStatus(order.id)">
+        <button v-if="order.delivered" class="btn btn-success" @click="editStatus(order.id, 0)">
           Bezorgd</button>
-        <button v-else class="btn btn-warning" @click="editStatus(order.id)">
+        <button v-else class="btn btn-warning" @click="editStatus(order.id, 1)">
           Niet bezorgd</button>
       </div>
     </div>
@@ -66,8 +66,12 @@ export default {
           this.$emit("update");
         }).catch(error => console.log(error));
     },
-    updateOrder(id) {
-      this.$router.push("/editproduct/" + id);
+    editStatus(id, status) {
+      axios.put("/order/" + id + "/" + status)
+        .then(result => {
+          console.log(result);
+          this.$emit("update");
+        }).catch(error => console.log(error));
     },
   },
 };

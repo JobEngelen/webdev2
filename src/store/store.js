@@ -65,6 +65,10 @@ const store = createStore({
             localStorage.setItem('cart', JSON.stringify(state.cart));
         },
         clearShoppingCart(state) {
+            state.cart.forEach(product => {
+                product.quantity = 1;
+            });
+            localStorage.removeItem('cart');
             state.cart = [];
         }
     },
@@ -146,21 +150,11 @@ const store = createStore({
             })
         },
         clearShoppingCart({ commit }) {
-            localStorage.removeItem('cart');
             commit('clearShoppingCart');
         },
         order({ commit }) {
 
-            var cart = localStorage.getItem('cart');/*
-            var orderString = "";
-            if (typeof cart !== "undefined" && cart !== null && cart != "") {
-                JSON.parse(cart).forEach(product => {
-                    orderString += ",," + product.id + "q" + product.quantity;
-                })
-            }
-
-            console.log("os= " + orderString);
-            console.log("uid= " + localStorage.getItem('uid'));*/
+            var cart = localStorage.getItem('cart');
             return new Promise((resolve, reject) => {
                 axios
                     .post("/order", {
