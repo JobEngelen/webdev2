@@ -153,13 +153,14 @@ const store = createStore({
             commit('clearShoppingCart');
         },
         order({ commit }) {
-
+            var uid = 1;
+            if (localStorage.getItem('uid') != null) uid = localStorage.getItem('uid');
             var cart = localStorage.getItem('cart');
             return new Promise((resolve, reject) => {
                 axios
                     .post("/order", {
                         orderstring: JSON.parse(cart),
-                        userid: localStorage.getItem('uid'),
+                        userid: uid,
                     })
                     .then(res => {
                         console.log(res);
