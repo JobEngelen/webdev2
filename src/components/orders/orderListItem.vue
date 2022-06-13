@@ -19,7 +19,7 @@
         </table>
       </div>
       <div class="col">
-        <span class="price float-end">1</span>
+        <span class="price float-end">€ {{ getTotal() }}</span>
       </div>
     </div>
 
@@ -72,6 +72,13 @@ export default {
           console.log(result);
           this.$emit("update");
         }).catch(error => console.log(error));
+    },
+    getTotal() {
+      var total = 0;
+      this.products.forEach(product => {
+        total += parseFloat(product.price) * product.quantity;
+      })
+      return total.toFixed(2);
     },
   },
 };
